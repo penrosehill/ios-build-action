@@ -173,6 +173,7 @@ platform :ios do
           xcodeproj: ENV['PROJECT_PATH']
         )
       else
+        current_testflight_build_number = ENV['INCREMENT_BUILD_NUMBER]
         increment_build_number(
           build_number: ENV['INCREMENT_BUILD_NUMBER'],
           xcodeproj: ENV['PROJECT_PATH']
@@ -225,6 +226,7 @@ platform :ios do
       )
       upload_to_testflight( # alias for pilot
         api_key: api_key,
+        app_version: current_testflight_build_number,
         skip_waiting_for_build_processing: true,
         skip_submission: true,
         distribute_external: false,
