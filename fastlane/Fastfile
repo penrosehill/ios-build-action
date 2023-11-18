@@ -173,6 +173,7 @@ platform :ios do
           xcodeproj: ENV['PROJECT_PATH']
         )
       else
+        current_testflight_build_number = ENV['INCREMENT_BUILD_NUMBER]
         increment_build_number(
           build_number: ENV['INCREMENT_BUILD_NUMBER'],
           xcodeproj: ENV['PROJECT_PATH']
@@ -215,6 +216,24 @@ platform :ios do
       destination: use_build_destination ? ENV['BUILD_DESTINATION'] : nil,
       build_path: use_build_path ? ENV['BUILD_PATH'] : nil
     )
+
+    if ENV['UPLOAD_TO_TESTFLIGHT'] == 'true'
+      api_key = app_store_connect_api_key(
+        key_id: ENV['APP_STORE_CONNECT_API_KEY_ID'],
+        issuer_id: ENV['APP_STORE_CONNECT_API_KEY_ISSUER_ID'],
+        key_content: ENV['APP_STORE_CONNECT_API_KEY_BASE64'],
+        is_key_content_base64: true
+      )
+      upload_to_testflight( # alias for pilot
+        api_key: api_key,
+        app_version: current_testflight_build_number,
+        skip_waiting_for_build_processing: true,
+        skip_submission: true,
+        distribute_external: false,
+        notify_external_testers: false,
+        ipa: ENV['BUILD_PATH']
+      )
+    end
 
     delete_keychain(name: keychain_name)
   end
